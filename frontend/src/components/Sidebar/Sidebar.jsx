@@ -23,6 +23,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import HomeIcon from '@mui/icons-material/Home';
 import { formatRelativeTime } from '../../utils/dateFormat.jsx';
 
 // Drawer width
@@ -48,6 +49,7 @@ function Sidebar({
   selectedUser,
   onBotSelect,
   onUserSelect,
+  onHomeSelect,
   filters
 }) {
   // State for expanded bots
@@ -151,6 +153,18 @@ function Sidebar({
       <Divider />
       
       <List component="nav">
+        <ListItemButton
+          onClick={onHomeSelect}
+          selected={!selectedBot}
+        >
+          <ListItemIcon>
+            <HomeIcon color={!selectedBot ? 'primary' : 'inherit'} />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItemButton>
+        
+        <Divider />
+        
         {filteredBots.length === 0 ? (
           <ListItem>
             <Typography variant="body2" color="text.secondary">

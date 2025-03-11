@@ -74,6 +74,13 @@ function App() {
     setSelectedUser(userName);
     setViewType(VIEW_TYPES.DETAIL);
   };
+
+  // Handle home selection
+  const handleHomeSelect = () => {
+    setSelectedBot(null);
+    setSelectedUser(null);
+    setViewType(VIEW_TYPES.GRID);
+  };
   
   // Handle filter changes
   const handleFilterChange = (filterName, value) => {
@@ -169,6 +176,7 @@ function App() {
           selectedUser={selectedUser}
           onBotSelect={handleBotSelect}
           onUserSelect={handleUserSelect}
+          onHomeSelect={handleHomeSelect}
           filters={filters}
         />
         

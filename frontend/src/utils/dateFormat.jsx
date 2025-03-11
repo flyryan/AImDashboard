@@ -52,7 +52,9 @@ export function parseTimestamp(timestamp) {
   // Check if timestamp is in the format [YYYY-MM-DD HH:mm:ss]
   const match = timestamp.match(/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/);
   if (match) {
-    return new Date(match[1].replace(' ', 'T') + 'Z');
+    // Convert the timestamp to ISO format with Z to properly interpret as UTC
+    const isoTimestamp = match[1].replace(' ', 'T') + 'Z';
+    return new Date(isoTimestamp);
   }
   
   // Try to parse as a regular date string
