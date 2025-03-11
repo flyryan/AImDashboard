@@ -30,7 +30,7 @@ const MessagesContainer = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   overflow: 'auto',
   padding: theme.spacing(2),
-  backgroundColor: theme.palette.grey[50],
+  backgroundColor: theme.palette.background.default,
 }));
 
 const DateDivider = styled(Box)(({ theme }) => ({

@@ -193,16 +193,26 @@ function Header({
         <Chip
           label={`${botCount} Bots`}
           color="primary"
-          variant="outlined"
           size="small"
-          sx={{ mr: 1, bgcolor: 'background.paper' }}
+          sx={{
+            mr: 1,
+            color: '#FFFFFF',
+            '& .MuiChip-label': {
+              fontWeight: 500
+            }
+          }}
         />
         <Chip
           label={`${userCount} Users`}
           color="secondary"
-          variant="outlined"
           size="small"
-          sx={{ mr: 2, bgcolor: 'background.paper' }}
+          sx={{
+            mr: 2,
+            color: '#FFFFFF',
+            '& .MuiChip-label': {
+              fontWeight: 500
+            }
+          }}
         />
         
         {/* Filter button */}

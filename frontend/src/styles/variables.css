@@ -1,25 +1,42 @@
 :root {
-  /* Color palette */
-  --primary-color: #1976d2;
-  --primary-light: #4791db;
-  --primary-dark: #115293;
+  /* Trend Micro Color palette */
+  --trend-red: #D71920;
+  --trend-red-80: #DE543B;
+  --trend-red-60: #E67C60;
+  --trend-red-40: #EDA389;
   
-  --secondary-color: #dc004e;
-  --secondary-light: #e33371;
-  --secondary-dark: #9a0036;
+  --rich-black: #000000;
+  --guardian-red: #6F0000;
   
-  --success-color: #4caf50;
-  --warning-color: #ff9800;
-  --error-color: #f44336;
-  --info-color: #2196f3;
+  /* Grays */
+  --gray-10: #E6E7E8;
+  --gray-20: #D1D3D4;
+  --gray-30: #BCBEC0;
+  --gray-40: #A7A9AC;
+  --gray-50: #939598;
+  --gray-60: #808285;
+  --gray-70: #6D6E71;
+  --gray-80: #58595B;
+  --gray-90: #414042;
+  
+  /* Secondary Colors (use sparingly) */
+  --dark-blue: #005295;
+  --light-blue: #56A0D3;
+  --teal: #2CAFA4;
+  
+  /* Status Colors */
+  --success-color: #73C167;
+  --warning-color: #FFDE6C;
+  --error-color: #D71920;
+  --info-color: #56A0D3;
   
   --text-primary: rgba(0, 0, 0, 0.87);
   --text-secondary: rgba(0, 0, 0, 0.6);
   --text-disabled: rgba(0, 0, 0, 0.38);
   
-  --background-default: #f5f5f5;
-  --background-paper: #ffffff;
-  --background-dark: #121212;
+  --background-default: #ffffff;
+  --background-paper: #f5f5f5;
+  --background-dark: #000000;
   
   /* Spacing */
   --spacing-xs: 4px;
@@ -73,20 +90,42 @@
 
 /* Dark theme variables */
 .dark-theme {
-  --text-primary: rgba(255, 255, 255, 0.87);
-  --text-secondary: rgba(255, 255, 255, 0.6);
-  --text-disabled: rgba(255, 255, 255, 0.38);
-  
-  --background-default: #121212;
-  --background-paper: #1e1e1e;
-  
-  --primary-color: #90caf9;
-  --primary-light: #a6d4fa;
-  --primary-dark: #648dae;
-  
-  --secondary-color: #f48fb1;
-  --secondary-light: #f6a5c0;
-  --secondary-dark: #aa647b;
+/* Text colors for better readability */
+--text-primary: #FFFFFF;
+--text-secondary: var(--gray-10);
+--text-disabled: var(--gray-30);
+
+/* Dark backgrounds with better contrast */
+--background-default: #1E1E1E;
+--background-paper: #2D2D2D;
+
+/* Primary colors */
+--primary-color: var(--trend-red);
+--primary-light: var(--trend-red-60);
+--primary-dark: var(--guardian-red);
+
+/* Secondary colors - use sparingly */
+--secondary-color: var(--dark-blue);
+--secondary-light: var(--light-blue);
+--secondary-dark: var(--teal);
+
+/* Status indicators with improved visibility */
+--activity-high: var(--trend-red);
+--activity-medium: #FFDE6C;
+--activity-low: #73C167;
+--activity-none: var(--gray-40);
+
+/* UI Elements */
+--border-color: var(--gray-70);
+--divider-color: var(--gray-80);
+--hover-bg: rgba(215, 25, 32, 0.08);
+--selected-bg: rgba(215, 25, 32, 0.16);
+--selected-hover-bg: rgba(215, 25, 32, 0.24);
+
+/* Shadows with better visibility */
+--shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+--shadow-md: 0 4px 8px rgba(0, 0, 0, 0.5);
+--shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
 /* Media query variables */

@@ -16,7 +16,9 @@ import { formatDateTime } from '../../utils/dateFormat.jsx';
 const UserMessagePaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   marginBottom: theme.spacing(2),
-  backgroundColor: theme.palette.primary.light,
+  backgroundColor: theme.palette.mode === 'dark' 
+    ? theme.palette.primary.dark 
+    : theme.palette.primary.light,
   color: theme.palette.primary.contrastText,
   maxWidth: '80%',
   borderRadius: '16px 16px 4px 16px',
@@ -25,7 +27,9 @@ const UserMessagePaper = styled(Paper)(({ theme }) => ({
 const BotMessagePaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   marginBottom: theme.spacing(2),
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.mode === 'dark' 
+    ? 'rgba(45, 45, 45, 0.9)' 
+    : theme.palette.background.paper,
   border: `1px solid ${theme.palette.divider}`,
   maxWidth: '80%',
   borderRadius: '16px 16px 16px 4px',
@@ -34,7 +38,9 @@ const BotMessagePaper = styled(Paper)(({ theme }) => ({
 const BotEntryPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   marginBottom: theme.spacing(2),
-  backgroundColor: theme.palette.grey[100],
+  backgroundColor: theme.palette.mode === 'dark' 
+    ? 'rgba(45, 45, 45, 0.7)' 
+    : theme.palette.grey[100],
   border: `1px solid ${theme.palette.divider}`,
   maxWidth: '80%',
   borderRadius: '16px',

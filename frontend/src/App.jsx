@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline, CircularProgress, Typography, Alert } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './styles/theme.js';
 import Header from './components/Header/Header.jsx';
 import Sidebar from './components/Sidebar/Sidebar.jsx';
 import GridView from './components/GridView/GridView.jsx';
@@ -16,7 +17,6 @@ const VIEW_TYPES = {
 };
 
 function App() {
-  const theme = useTheme();
   const { isConnected, lastError, reconnect } = useSocket();
   const { conversations, getBots, getActiveBotCount, getActiveUserCount } = useConversations();
   
@@ -91,21 +91,23 @@ function App() {
   // Render loading state
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-          bgcolor: theme.palette.background.default
-        }}
-      >
-        <CircularProgress size={60} />
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          Loading Dashboard...
-        </Typography>
-      </Box>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100vh'
+          }}
+        >
+          <CircularProgress size={60} />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading Dashboard...
+          </Typography>
+        </Box>
+      </ThemeProvider>
     );
   }
   
@@ -143,63 +145,64 @@ function App() {
   };
   
   return (
-    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      <CssBaseline />
-      
-      {/* Header */}
-      <Header
-        onSidebarToggle={handleSidebarToggle}
-        viewType={viewType}
-        onViewChange={handleViewChange}
-        botCount={getActiveBotCount()}
-        userCount={getActiveUserCount()}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-      />
-      
-      {/* Sidebar */}
-      <Sidebar
-        open={isSidebarOpen}
-        bots={getBots()}
-        conversations={conversations}
-        selectedBot={selectedBot}
-        selectedUser={selectedUser}
-        onBotSelect={handleBotSelect}
-        onUserSelect={handleUserSelect}
-        filters={filters}
-      />
-      
-      {/* Main content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          mt: 8, // Below the header
-          height: 'calc(100vh - 64px)', // Full height minus header
-          overflow: 'auto',
-          bgcolor: theme.palette.background.default
-        }}
-      >
-        {/* Connection error alert */}
-        {!isConnected && (
-          <Alert 
-            severity="error" 
-            sx={{ mb: 2 }}
-            action={
-              <button onClick={reconnect}>
-                Reconnect
-              </button>
-            }
-          >
-            Connection lost. {lastError || 'Attempting to reconnect...'}
-          </Alert>
-        )}
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+        <CssBaseline />
         
-        {/* Main content based on view type */}
-        {renderContent()}
+        {/* Header */}
+        <Header
+          onSidebarToggle={handleSidebarToggle}
+          viewType={viewType}
+          onViewChange={handleViewChange}
+          botCount={getActiveBotCount()}
+          userCount={getActiveUserCount()}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+        />
+        
+        {/* Sidebar */}
+        <Sidebar
+          open={isSidebarOpen}
+          bots={getBots()}
+          conversations={conversations}
+          selectedBot={selectedBot}
+          selectedUser={selectedUser}
+          onBotSelect={handleBotSelect}
+          onUserSelect={handleUserSelect}
+          filters={filters}
+        />
+        
+        {/* Main content */}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            mt: 8, // Below the header
+            height: 'calc(100vh - 64px)', // Full height minus header
+            overflow: 'auto'
+          }}
+        >
+          {/* Connection error alert */}
+          {!isConnected && (
+            <Alert
+              severity="error"
+              sx={{ mb: 2 }}
+              action={
+                <button onClick={reconnect}>
+                  Reconnect
+                </button>
+              }
+            >
+              Connection lost. {lastError || 'Attempting to reconnect...'}
+            </Alert>
+          )}
+          
+          {/* Main content based on view type */}
+          {renderContent()}
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 }
 

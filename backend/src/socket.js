@@ -8,7 +8,8 @@ class SocketServer {
       cors: {
         origin: config.corsOrigin,
         methods: ['GET', 'POST']
-      }
+      },
+      path: '/ws'
     });
     
     this.connectedClients = 0;
