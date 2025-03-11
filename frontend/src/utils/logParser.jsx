@@ -1,3 +1,6 @@
+// Message boundary indicator
+const MESSAGE_BOUNDARY = '#=====< MESSAGE BOUNDARY >=====# ';
+
 /**
  * Parse a raw message to extract sender, timestamp, and content
  * @param {string} rawMessage - The raw message to parse
@@ -5,25 +8,44 @@
  */
 export function parseMessage(rawMessage) {
   try {
-    // Check if the message matches the expected format
-    const timestampMatch = rawMessage.match(/^\[(.*?)\]\s+(.*?):\s+(.*)/);
+    // Remove any message boundary indicators
+    const cleanMessage = rawMessage.replace(MESSAGE_BOUNDARY, '').trim();
+    
+    // Split the message into lines
+    const lines = cleanMessage.split('\n');
+    if (lines.length === 0) return null;
+    
+    // The first line should contain the timestamp and sender
+    const firstLine = lines[0];
+    const timestampMatch = firstLine.match(/^\[(.*?)\]\s+(.*?):\s+(.*)/);
     
     if (!timestampMatch) {
       return null;
     }
     
-    // Extract timestamp, sender, and message
-    const [, timestamp, sender, message] = timestampMatch;
+    // Extract timestamp, sender, and first line of message
+    const [, timestamp, sender, firstMessageLine] = timestampMatch;
     
     // Check if this is a bot entry message
-    const botEntryMatch = message.match(/\*(.*?) has entered the chat\*/);
+    const botEntryMatch = firstMessageLine.match(/\*(.*?) has entered the chat\*/);
+    
+    // Prepare the full message content
+    let messageContent = firstMessageLine;
+    
+    // If there are additional lines, add them to the message content
+    if (lines.length > 1) {
+      const additionalLines = lines.slice(1).join('\n');
+      if (additionalLines.trim()) {
+        messageContent += '\n' + additionalLines.trim();
+      }
+    }
     
     if (botEntryMatch) {
       // This is a bot entry message
       return {
         timestamp,
         sender: 'bot',
-        content: '',
+        content: messageContent,
         isEntry: true,
         botName: botEntryMatch[1]
       };
@@ -33,12 +55,30 @@ export function parseMessage(rawMessage) {
     return {
       timestamp,
       sender: sender.toLowerCase() === 'bot' ? 'bot' : 'user',
-      content: message,
+      content: messageContent,
       isEntry: false
     };
   } catch (error) {
     console.error('Error parsing message:', error);
     return null;
+  }
+}
+
+/**
+ * Parse a raw log content with multiple messages
+ * @param {string} rawContent - The raw log content to parse
+ * @returns {Array} Array of parsed messages
+ */
+export function parseLogContent(rawContent) {
+  try {
+    // Split the content by message boundary
+    const messageBlocks = rawContent.split(MESSAGE_BOUNDARY).filter(block => block.trim());
+    
+    // Parse each message block
+    return messageBlocks.map(block => parseMessage(block)).filter(msg => msg !== null);
+  } catch (error) {
+    console.error('Error parsing log content:', error);
+    return [];
   }
 }
 
@@ -102,6 +142,7 @@ export function groupMessagesByDate(messages) {
 
 export default {
   parseMessage,
+  parseLogContent,
   formatMessage,
   groupMessagesByDate
 };

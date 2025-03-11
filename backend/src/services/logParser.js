@@ -2,6 +2,9 @@ import fs from 'fs/promises';
 import path from 'path';
 import logger from '../utils/logger.js';
 
+// Message boundary indicator
+const MESSAGE_BOUNDARY = '#=====< MESSAGE BOUNDARY >=====# ';
+
 /**
  * Parse a log file and extract structured conversation data
  * @param {string} filePath - Path to the log file
@@ -11,7 +14,6 @@ export async function parseLogFile(filePath) {
   try {
     // Read the file content
     const content = await fs.readFile(filePath, 'utf-8');
-    const lines = content.split('\n');
     
     // Extract bot name from the file path
     // Assuming path format: /path/to/conversations/BOT_NAME/user.log
@@ -21,118 +23,66 @@ export async function parseLogFile(filePath) {
     // Assuming file name format: username.log
     const userName = path.basename(filePath, '.log');
     
-    const messages = [];
-    let currentMessage = null;
-    let isMultilineMessage = false;
-    let botResponseContent = '';
+    // Split the content by message boundary
+    const messageBlocks = content.split(MESSAGE_BOUNDARY).filter(block => block.trim());
     
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+    const messages = [];
+    
+    for (const block of messageBlocks) {
+      const lines = block.trim().split('\n');
+      if (lines.length === 0) continue;
       
-      // Check if this is a new message (starts with timestamp)
-      const timestampMatch = line.match(/^\[(.*?)\]\s+(.*?):\s+(.*)/);
+      // The first line should contain the timestamp and sender
+      const firstLine = lines[0];
+      const timestampMatch = firstLine.match(/^\[(.*?)\]\s+(.*?):\s+(.*)/);
       
-      if (timestampMatch) {
-        // If we were processing a multiline message, add it to messages
-        if (currentMessage && isMultilineMessage && botResponseContent) {
-          // Add the bot's response as a separate message
-          messages.push({
-            timestamp: currentMessage.timestamp,
-            sender: 'bot',
-            botName,
-            userName,
-            content: botResponseContent.trim(),
-            isEntry: false
-          });
-          botResponseContent = '';
-          isMultilineMessage = false;
-        }
-        
-        // Extract timestamp, sender, and message
-        const [, timestamp, sender, message] = timestampMatch;
-        
-        // Check if this is a bot entry message
-        const botEntryMatch = message.match(/\*(.*?) has entered the chat\*/);
-        const isBotMessage = sender.toLowerCase() === 'bot';
-        
-        if (botEntryMatch) {
-          // This is a bot entry message
-          currentMessage = {
-            timestamp,
-            sender: 'bot',
-            botName,
-            userName,
-            content: message,
-            isEntry: true
-          };
-          messages.push(currentMessage);
-          isMultilineMessage = true;
-          botResponseContent = '';
-        } else if (isBotMessage) {
-          // This is a bot message - could be the start of a multiline message
-          currentMessage = {
-            timestamp,
-            sender: 'bot',
-            botName,
-            userName,
-            content: message,
-            isEntry: false
-          };
-          
-          // For bot messages, we'll add them to the array but also set up for potential multiline content
-          messages.push(currentMessage);
-          isMultilineMessage = true;
-          botResponseContent = '';
-        } else {
-          // This is a user message
-          currentMessage = {
-            timestamp,
-            sender: 'user',
-            botName,
-            userName,
-            content: message,
-            isEntry: false
-          };
-          
-          // Add the user message to the array
-          messages.push(currentMessage);
-          currentMessage = null;
-          isMultilineMessage = false;
-        }
-      } else if (isMultilineMessage && currentMessage) {
-        // This is part of a multiline bot message
-        // Add the line to the bot response content
-        if (line.trim()) {  // Only add non-empty lines
-          if (botResponseContent) {
-            botResponseContent += '\n' + line;
-          } else {
-            botResponseContent = line;
-          }
+      if (!timestampMatch) continue;
+      
+      // Extract timestamp, sender, and first line of message
+      const [, timestamp, sender, firstMessageLine] = timestampMatch;
+      
+      // Check if this is a bot entry message
+      const botEntryMatch = firstMessageLine.match(/\*(.*?) has entered the chat\*/);
+      const isBotMessage = sender.toLowerCase() === 'bot';
+      
+      let messageContent = firstMessageLine;
+      
+      // If there are additional lines, add them to the message content
+      if (lines.length > 1) {
+        const additionalLines = lines.slice(1).join('\n');
+        if (additionalLines.trim()) {
+          messageContent += '\n' + additionalLines.trim();
         }
       }
-    }
-    
-    // Add the last message if it exists
-    if (currentMessage && isMultilineMessage && botResponseContent) {
-      // For the last message, we need to update the existing bot message with the full content
-      // Find the last bot message
-      const lastBotMessageIndex = messages.findIndex(msg =>
-        msg.timestamp === currentMessage.timestamp &&
-        msg.sender === 'bot' &&
-        !msg.isEntry
-      );
       
-      if (lastBotMessageIndex !== -1) {
-        // Update the existing message with the full content
-        messages[lastBotMessageIndex].content += '\n' + botResponseContent.trim();
-      } else {
-        // If for some reason we didn't find the message, add a new one
+      if (botEntryMatch) {
+        // This is a bot entry message
         messages.push({
-          timestamp: currentMessage.timestamp,
+          timestamp,
           sender: 'bot',
           botName,
           userName,
-          content: botResponseContent.trim(),
+          content: messageContent,
+          isEntry: true
+        });
+      } else if (isBotMessage) {
+        // This is a bot message
+        messages.push({
+          timestamp,
+          sender: 'bot',
+          botName,
+          userName,
+          content: messageContent,
+          isEntry: false
+        });
+      } else {
+        // This is a user message
+        messages.push({
+          timestamp,
+          sender: 'user',
+          botName,
+          userName,
+          content: messageContent,
           isEntry: false
         });
       }
