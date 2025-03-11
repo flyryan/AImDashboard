@@ -45,6 +45,7 @@ export async function parseLogFile(filePath) {
             isEntry: false
           });
           botResponseContent = '';
+          isMultilineMessage = false;
         }
         
         // Extract timestamp, sender, and message
@@ -52,6 +53,7 @@ export async function parseLogFile(filePath) {
         
         // Check if this is a bot entry message
         const botEntryMatch = message.match(/\*(.*?) has entered the chat\*/);
+        const isBotMessage = sender.toLowerCase() === 'bot';
         
         if (botEntryMatch) {
           // This is a bot entry message
@@ -66,45 +68,74 @@ export async function parseLogFile(filePath) {
           messages.push(currentMessage);
           isMultilineMessage = true;
           botResponseContent = '';
-        } else {
-          // This is a regular message
+        } else if (isBotMessage) {
+          // This is a bot message - could be the start of a multiline message
           currentMessage = {
             timestamp,
-            sender: sender.toLowerCase() === 'bot' ? 'bot' : 'user',
+            sender: 'bot',
             botName,
             userName,
             content: message,
             isEntry: false
           };
           
-          // Add the message to the array if it's not a bot entry
-          if (!isMultilineMessage) {
-            messages.push(currentMessage);
-            currentMessage = null;
-          }
+          // For bot messages, we'll add them to the array but also set up for potential multiline content
+          messages.push(currentMessage);
+          isMultilineMessage = true;
+          botResponseContent = '';
+        } else {
+          // This is a user message
+          currentMessage = {
+            timestamp,
+            sender: 'user',
+            botName,
+            userName,
+            content: message,
+            isEntry: false
+          };
+          
+          // Add the user message to the array
+          messages.push(currentMessage);
+          currentMessage = null;
+          isMultilineMessage = false;
         }
       } else if (isMultilineMessage && currentMessage) {
         // This is part of a multiline bot message
         // Add the line to the bot response content
-        if (botResponseContent) {
-          botResponseContent += '\n' + line;
-        } else {
-          botResponseContent = line;
+        if (line.trim()) {  // Only add non-empty lines
+          if (botResponseContent) {
+            botResponseContent += '\n' + line;
+          } else {
+            botResponseContent = line;
+          }
         }
       }
     }
     
     // Add the last message if it exists
     if (currentMessage && isMultilineMessage && botResponseContent) {
-      // Add the bot's response as a separate message
-      messages.push({
-        timestamp: currentMessage.timestamp,
-        sender: 'bot',
-        botName,
-        userName,
-        content: botResponseContent.trim(),
-        isEntry: false
-      });
+      // For the last message, we need to update the existing bot message with the full content
+      // Find the last bot message
+      const lastBotMessageIndex = messages.findIndex(msg =>
+        msg.timestamp === currentMessage.timestamp &&
+        msg.sender === 'bot' &&
+        !msg.isEntry
+      );
+      
+      if (lastBotMessageIndex !== -1) {
+        // Update the existing message with the full content
+        messages[lastBotMessageIndex].content += '\n' + botResponseContent.trim();
+      } else {
+        // If for some reason we didn't find the message, add a new one
+        messages.push({
+          timestamp: currentMessage.timestamp,
+          sender: 'bot',
+          botName,
+          userName,
+          content: botResponseContent.trim(),
+          isEntry: false
+        });
+      }
     }
     
     return messages;
