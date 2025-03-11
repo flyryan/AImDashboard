@@ -9,6 +9,12 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Build argument for dashboard password
+ARG VITE_DASHBOARD_PASSWORD=admin
+
+# Set environment variable for build
+ENV VITE_DASHBOARD_PASSWORD=$VITE_DASHBOARD_PASSWORD
+
 # Build the application
 RUN npm run build
 

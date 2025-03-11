@@ -11,6 +11,9 @@ export default defineConfig({
     assetsDir: 'assets',
     emptyOutDir: true,
   },
+  define: {
+    'process.env.VITE_DASHBOARD_PASSWORD': JSON.stringify(process.env.VITE_DASHBOARD_PASSWORD || 'admin')
+  },
   server: {
     port: 5173,
     // In development, proxy requests to the backend
