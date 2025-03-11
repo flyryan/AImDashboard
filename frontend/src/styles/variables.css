@@ -1,0 +1,98 @@
+:root {
+  /* Color palette */
+  --primary-color: #1976d2;
+  --primary-light: #4791db;
+  --primary-dark: #115293;
+  
+  --secondary-color: #dc004e;
+  --secondary-light: #e33371;
+  --secondary-dark: #9a0036;
+  
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --info-color: #2196f3;
+  
+  --text-primary: rgba(0, 0, 0, 0.87);
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --text-disabled: rgba(0, 0, 0, 0.38);
+  
+  --background-default: #f5f5f5;
+  --background-paper: #ffffff;
+  --background-dark: #121212;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  
+  /* Typography */
+  --font-family: 'Roboto', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+  
+  /* Borders */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-circle: 50%;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+  
+  /* Z-index */
+  --z-index-drawer: 1200;
+  --z-index-app-bar: 1100;
+  --z-index-modal: 1300;
+  --z-index-tooltip: 1500;
+  
+  /* Transitions */
+  --transition-duration: 0.3s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Layout */
+  --header-height: 64px;
+  --sidebar-width: 240px;
+  --footer-height: 40px;
+  
+  /* Activity indicators */
+  --activity-high: #f44336;
+  --activity-medium: #ff9800;
+  --activity-low: #4caf50;
+  --activity-none: #9e9e9e;
+}
+
+/* Dark theme variables */
+.dark-theme {
+  --text-primary: rgba(255, 255, 255, 0.87);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-disabled: rgba(255, 255, 255, 0.38);
+  
+  --background-default: #121212;
+  --background-paper: #1e1e1e;
+  
+  --primary-color: #90caf9;
+  --primary-light: #a6d4fa;
+  --primary-dark: #648dae;
+  
+  --secondary-color: #f48fb1;
+  --secondary-light: #f6a5c0;
+  --secondary-dark: #aa647b;
+}
+
+/* Media query variables */
+@media (max-width: 600px) {
+  :root {
+    --header-height: 56px;
+    --sidebar-width: 0;
+  }
+}
