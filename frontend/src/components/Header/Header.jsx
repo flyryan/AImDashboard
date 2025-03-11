@@ -20,8 +20,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import SettingsIcon from '@mui/icons-material/Settings';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { throttle } from '../../utils/throttle.jsx';
 
@@ -75,18 +73,7 @@ function Header({
   onFilterChange
 }) {
   // State for menus
-  const [anchorEl, setAnchorEl] = useState(null);
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
-  const [notificationsAnchorEl, setNotificationsAnchorEl] = useState(null);
-  
-  // Handle menu open/close
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
   
   // Handle filter menu open/close
   const handleFilterMenuOpen = (event) => {
@@ -97,14 +84,6 @@ function Header({
     setFilterAnchorEl(null);
   };
   
-  // Handle notifications menu open/close
-  const handleNotificationsMenuOpen = (event) => {
-    setNotificationsAnchorEl(event.currentTarget);
-  };
-  
-  const handleNotificationsMenuClose = () => {
-    setNotificationsAnchorEl(null);
-  };
   
   // Handle view change
   const handleViewChange = (event, newView) => {
@@ -227,32 +206,7 @@ function Header({
           </IconButton>
         </Tooltip>
         
-        {/* Notifications button */}
-        <Tooltip title="Notifications">
-          <IconButton
-            color="inherit"
-            onClick={handleNotificationsMenuOpen}
-            aria-controls="notifications-menu"
-            aria-haspopup="true"
-          >
-            <Badge badgeContent={0} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Tooltip>
-        
-        {/* Settings button */}
-        <Tooltip title="Settings">
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleMenuOpen}
-            aria-controls="settings-menu"
-            aria-haspopup="true"
-          >
-            <SettingsIcon />
-          </IconButton>
-        </Tooltip>
+        {/* Notifications and Settings buttons removed until functionality is implemented */}
         
         {/* Filter menu */}
         <Menu
@@ -312,31 +266,6 @@ function Header({
           </MenuItem>
         </Menu>
         
-        {/* Notifications menu */}
-        <Menu
-          id="notifications-menu"
-          anchorEl={notificationsAnchorEl}
-          keepMounted
-          open={Boolean(notificationsAnchorEl)}
-          onClose={handleNotificationsMenuClose}
-        >
-          <MenuItem disabled>
-            <Typography variant="subtitle2">No new notifications</Typography>
-          </MenuItem>
-        </Menu>
-        
-        {/* Settings menu */}
-        <Menu
-          id="settings-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Help</MenuItem>
-        </Menu>
       </Toolbar>
     </AppBar>
   );

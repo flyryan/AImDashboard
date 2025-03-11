@@ -13,7 +13,7 @@ services:
       - CORS_ORIGIN=${CORS_ORIGIN:-http://frontend}
       - NODE_ENV=${NODE_ENV:-production}
     volumes:
-      - ${CONVERSATIONS_PATH:-./conversations}:${CONVERSATIONS_DIR:-/app/conversations}:ro
+      - ${CONVERSATIONS_PATH:-/Users/ryand/Library/CloudStorage/OneDrive-TrendMicro/Documents/Code/AImDashboard/logs/conversations}:${CONVERSATIONS_DIR:-/app/conversations}:ro
       - ${LOGS_PATH:-./logs}:/app/logs
     # No port exposed to host - only accessible within Docker network
     networks:
