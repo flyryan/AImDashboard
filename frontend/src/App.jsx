@@ -7,7 +7,9 @@ import Sidebar from './components/Sidebar/Sidebar.jsx';
 import GridView from './components/GridView/GridView.jsx';
 import ListView from './components/ListView/ListView.jsx';
 import DetailView from './components/DetailView/DetailView.jsx';
+import Login from './components/Login/Login.jsx';
 import { useSocket, useConversations } from './hooks/useSocket.jsx';
+import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 
 // View types
 const VIEW_TYPES = {
@@ -16,7 +18,18 @@ const VIEW_TYPES = {
   DETAIL: 'detail'
 };
 
-function App() {
+// Main App component wrapped with AuthProvider
+const AppWithAuth = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+};
+
+// App content with authentication check
+function AppContent() {
+  const { isAuthenticated } = useAuth();
   const { isConnected, lastError, reconnect } = useSocket();
   const { conversations, getBots, getActiveBotCount, getActiveUserCount } = useConversations();
   
@@ -151,6 +164,17 @@ function App() {
     }
   };
   
+  // If not authenticated, show login page
+  if (!isAuthenticated) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Login />
+      </ThemeProvider>
+    );
+  }
+
+  // If authenticated, show dashboard
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
@@ -214,4 +238,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppWithAuth;

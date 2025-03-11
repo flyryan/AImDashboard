@@ -13,7 +13,8 @@ import {
   ToggleButton,
   Chip,
   InputBase,
-  alpha
+  alpha,
+  Button
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -21,7 +22,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { throttle } from '../../utils/throttle.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
 
 // Styled components
 const Search = styled('div')(({ theme }) => ({
@@ -72,6 +75,9 @@ function Header({
   filters,
   onFilterChange
 }) {
+  // Get auth context for logout
+  const { logout } = useAuth();
+  
   // State for menus
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
   
@@ -82,6 +88,11 @@ function Header({
   
   const handleFilterMenuClose = () => {
     setFilterAnchorEl(null);
+  };
+  
+  // Handle logout
+  const handleLogout = () => {
+    logout();
   };
   
   
@@ -206,7 +217,17 @@ function Header({
           </IconButton>
         </Tooltip>
         
-        {/* Notifications and Settings buttons removed until functionality is implemented */}
+        {/* Logout button */}
+        <Tooltip title="Logout">
+          <Button
+            color="inherit"
+            onClick={handleLogout}
+            startIcon={<LogoutIcon />}
+            sx={{ ml: 2 }}
+          >
+            Logout
+          </Button>
+        </Tooltip>
         
         {/* Filter menu */}
         <Menu
