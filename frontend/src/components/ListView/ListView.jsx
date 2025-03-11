@@ -20,7 +20,7 @@ import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatRelativeTime, formatDateTime } from '../../utils/dateFormat.jsx';
+import { formatRelativeTime, formatDateTime, parseTimestamp } from '../../utils/dateFormat.jsx';
 
 // Styled components
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -102,7 +102,7 @@ function ListView({ conversations, onSelectConversation, filters }) {
         comparison = a.userName.localeCompare(b.userName);
         break;
       case 'lastActive':
-        comparison = new Date(b.lastActive) - new Date(a.lastActive);
+        comparison = parseTimestamp(b.lastActive) - parseTimestamp(a.lastActive);
         break;
       case 'messageCount':
         comparison = b.messageCount - a.messageCount;
@@ -126,7 +126,7 @@ function ListView({ conversations, onSelectConversation, filters }) {
     if (!timestamp) return 'none';
     
     const now = new Date();
-    const messageTime = new Date(timestamp);
+    const messageTime = parseTimestamp(timestamp);
     const diffMinutes = (now - messageTime) / (1000 * 60);
     
     if (diffMinutes < 5) return 'high';

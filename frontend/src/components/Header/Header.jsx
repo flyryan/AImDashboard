@@ -130,7 +130,7 @@ function Header({
           component="div"
           sx={{ display: { xs: 'none', sm: 'block' } }}
         >
-          AI Chatbot Dashboard
+          AI-Spy Dashboard
         </Typography>
         
         {/* Search bar */}

@@ -20,7 +20,7 @@ import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
-import { formatRelativeTime } from '../../utils/dateFormat.jsx';
+import { formatRelativeTime, parseTimestamp } from '../../utils/dateFormat.jsx';
 
 // Styled components
 const ExpandMore = styled((props) => {
@@ -51,7 +51,7 @@ function BotCard({ botName, conversations, onSelectConversation }) {
     const aLastMessage = aMessages[aMessages.length - 1];
     const bLastMessage = bMessages[bMessages.length - 1];
     
-    return new Date(bLastMessage.timestamp) - new Date(aLastMessage.timestamp);
+    return parseTimestamp(bLastMessage.timestamp) - parseTimestamp(aLastMessage.timestamp);
   });
   
   // Get the last message for a user
@@ -66,7 +66,7 @@ function BotCard({ botName, conversations, onSelectConversation }) {
     if (!timestamp) return 'none';
     
     const now = new Date();
-    const messageTime = new Date(timestamp);
+    const messageTime = parseTimestamp(timestamp);
     const diffMinutes = (now - messageTime) / (1000 * 60);
     
     if (diffMinutes < 5) return 'high';

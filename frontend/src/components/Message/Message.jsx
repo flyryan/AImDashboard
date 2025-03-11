@@ -10,7 +10,7 @@ import {
 import { styled } from '@mui/material/styles';
 import PersonIcon from '@mui/icons-material/Person';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
-import { formatDateTime } from '../../utils/dateFormat.jsx';
+import { formatDateTime, parseTimestamp } from '../../utils/dateFormat.jsx';
 
 // Styled components
 const UserMessagePaper = styled(Paper)(({ theme }) => ({
@@ -63,6 +63,14 @@ function Message({ message, botName, userName }) {
       )
     ));
   };
+  
+  // For debugging timestamp issues
+  console.log('Message timestamp:', {
+    raw: timestamp,
+    formatted: formatDateTime(timestamp),
+    date: parseTimestamp(timestamp),
+    now: new Date()
+  });
   
   // Render a bot entry message
   if (isEntry) {

@@ -9,9 +9,17 @@ import { format, formatDistanceToNow, parseISO } from 'date-fns';
 export function formatDate(timestamp, formatString = 'MMM d, yyyy h:mm a') {
   try {
     // Check if timestamp is already a Date object
-    const date = timestamp instanceof Date 
-      ? timestamp 
+    const date = timestamp instanceof Date
+      ? timestamp
       : parseTimestamp(timestamp);
+    
+    // Add debugging to see what's happening with the dates
+    console.log('Message timestamp:', {
+      original: timestamp,
+      parsed: date.toISOString(),
+      parsedLocal: date.toLocaleString(),
+      formatted: format(date, formatString)
+    });
     
     return format(date, formatString);
   } catch (error) {
@@ -27,9 +35,23 @@ export function formatDate(timestamp, formatString = 'MMM d, yyyy h:mm a') {
  */
 export function formatRelativeTime(timestamp) {
   try {
-    const date = timestamp instanceof Date 
-      ? timestamp 
+    const date = timestamp instanceof Date
+      ? timestamp
       : parseTimestamp(timestamp);
+    
+    const now = new Date();
+    const diffMs = now - date;
+    
+    // Add debugging to see what's happening with the dates
+    console.log('Relative time debug:', {
+      original: timestamp,
+      parsed: date.toISOString(),
+      parsedLocal: date.toLocaleString(),
+      now: now.toISOString(),
+      nowLocal: now.toLocaleString(),
+      diff: diffMs / (1000 * 60), // diff in minutes
+      formatted: formatDistanceToNow(date, { addSuffix: true })
+    });
     
     return formatDistanceToNow(date, { addSuffix: true });
   } catch (error) {
@@ -52,9 +74,49 @@ export function parseTimestamp(timestamp) {
   // Check if timestamp is in the format [YYYY-MM-DD HH:mm:ss]
   const match = timestamp.match(/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]/);
   if (match) {
-    // Convert the timestamp to ISO format with Z to properly interpret as UTC
-    const isoTimestamp = match[1].replace(' ', 'T') + 'Z';
-    return new Date(isoTimestamp);
+    // Extract date parts from the timestamp
+    const dateTimeStr = match[1];
+    const [datePart, timePart] = dateTimeStr.split(' ');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+    
+    // Create a date string in ISO format with the UTC timezone indicator (Z)
+    // This ensures the date is interpreted as UTC
+    const isoString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}Z`;
+    const date = new Date(isoString);
+    
+    console.log('Timestamp parsing:', {
+      original: timestamp,
+      dateTimeStr: dateTimeStr,
+      isoString: isoString,
+      date: date.toISOString(),
+      localDate: date.toLocaleString()
+    });
+    
+    return date;
+  }
+  
+  // Handle timestamps in the format 'YYYY-MM-DD HH:mm:ss' (without brackets)
+  const directMatch = timestamp.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})$/);
+  if (directMatch) {
+    const dateTimeStr = directMatch[1];
+    const [datePart, timePart] = dateTimeStr.split(' ');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+    
+    // Create a date string in ISO format with the UTC timezone indicator (Z)
+    const isoString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}Z`;
+    const date = new Date(isoString);
+    
+    console.log('Direct timestamp parsing:', {
+      original: timestamp,
+      dateTimeStr: dateTimeStr,
+      isoString: isoString,
+      date: date.toISOString(),
+      localDate: date.toLocaleString()
+    });
+    
+    return date;
   }
   
   // Try to parse as a regular date string
@@ -85,7 +147,26 @@ export function formatShortDate(timestamp) {
  * @returns {string} The formatted date and time
  */
 export function formatDateTime(timestamp) {
-  return formatDate(timestamp, 'MMM d, h:mm a');
+  try {
+    // Parse the timestamp
+    const date = timestamp instanceof Date
+      ? timestamp
+      : parseTimestamp(timestamp);
+    
+    // Format the date in local time
+    const localTime = format(date, 'MMM d, h:mm a');
+    
+    console.log('DateTime formatting:', {
+      original: timestamp,
+      parsed: date.toISOString(),
+      localTime: localTime
+    });
+    
+    return localTime;
+  } catch (error) {
+    console.error('Error formatting date time:', error);
+    return timestamp;
+  }
 }
 
 export default {
